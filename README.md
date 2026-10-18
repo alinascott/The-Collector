@@ -13,9 +13,13 @@ This repository brings the two archives back together:
 
 The site is static HTML served by GitHub Pages from the repository root. Every page is generated from the CSV files below.
 
-## Entry collage
+## Entrance
 
-`index.html` is the way in: a drifting collage of textiles, photographs and paper records. Visitors choose an image to enter, and each image opens its own page. The former front page is now `home.html`, and the site name in every header links to it. Images flagged for community review, and sampler 2148-589, are left out of the collage but keep their own pages. The tile list is made in `scripts/build_site.py`, and the styles are in `assets/collage.css`.
+`index.html` is the way in. A **View** toggle in the top right switches between two entrances: **Table** (the default) and **Filmstrip** (`filmstrip.html`, dated items in order from the 1860s to the 1969 accession). A third view, **Pairs**, is set aside for now; build it with `python3 scripts/build_entrance_views.py --pairs`. The teaching note is left off the entrance views and appears on every page inside the site.
+
+The Table is a matte table with three archival document boxes, one for each pathway: Provenance (32 paper records), Textiles (16 textiles) and Photography (28 photographs). The boxes carry no labels. Hovering over a box opens its lid, and the first prints rise out of it. Choosing a box spreads its prints across the table, and choosing a print opens that item's page. "All three stacks" or the Escape key goes back. A stack can be linked to directly as `index.html#provenance`, `#textiles` or `#photography`. The former front page is now `home.html`, and the site name in every header links to it. Images flagged for community review, and sampler 2148-589, are left out of the entrance but keep their own pages.
+
+The table is built by `scripts/build_entrances.py`, which runs after `build_site.py`. Earlier table surfaces, redrawn blankets 1633-76 and 2148-606, are kept in `scripts/saddle_svg.py` and `scripts/blanket_svg.py`. The styles are in `assets/entrances.css` and `assets/views.css`.
 
 ## Three pathways
 
@@ -42,6 +46,8 @@ python3 scripts/extract_wordpress.py   # WordPress XML -> textiles/records CSVs 
 python3 scripts/hrc_photographs.py     # HRC captions + cataloger notes -> photographs.csv
 python3 scripts/make_images.py         # 1200px web and 480px thumbnail JPEGs, PDFs
 python3 scripts/build_site.py          # render the HTML
+python3 scripts/build_entrances.py     # the entrance table (index.html)
+python3 scripts/build_entrance_views.py   # Filmstrip and the View toggle
 python3 scripts/build_site.py --withhold   # same, but withhold images flagged for community review
 ```
 
