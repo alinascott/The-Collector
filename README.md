@@ -13,6 +13,10 @@ This repository brings the two archives back together:
 
 The site is static HTML served by GitHub Pages from the repository root. Every page is generated from the CSV files below.
 
+## Entry collage
+
+`index.html` is the way in: a drifting collage of textiles, photographs and paper records. Visitors choose an image to enter, and each image opens its own page. The former front page is now `home.html`, and the site name in every header links to it. Images flagged for community review, and sampler 2148-589, are left out of the collage but keep their own pages. The tile list is made in `scripts/build_site.py`, and the styles are in `assets/collage.css`.
+
 ## Three pathways
 
 | Folder | What it holds | Data |

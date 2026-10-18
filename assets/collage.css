@@ -1,0 +1,51 @@
+/* Entry collage: five drifting columns of tiles; the threshold card floats above and lets clicks pass through.
+   A single dark look in both themes, so the images carry the colour. */
+.collage-page { --g: 10px; --bg-c: #0f1016; --fg-c: #f1efe9; --mute-c: #b9bac4; --line-c: #2a2c38;
+  margin: 0; height: 100vh; height: 100dvh; overflow: hidden; background: var(--bg-c); color: var(--fg-c); color-scheme: dark; }
+.collage-page .selvage { position: fixed; inset: 0 0 auto; z-index: 5; }
+.collage { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px;
+  padding: 10px max(10px, env(safe-area-inset-right, 0px)) 0 max(10px, env(safe-area-inset-left, 0px)); }
+.col { overflow: hidden; min-width: 0; }
+.track { display: grid; gap: var(--g); animation: drift var(--dur, 80s) linear infinite; will-change: transform; }
+.col[data-dir="down"] .track { animation-direction: reverse; }
+.col:hover .track, .col:focus-within .track { animation-play-state: paused; }
+@keyframes drift { from { transform: translateY(0); } to { transform: translateY(calc(-50% - var(--g) / 2)); } }
+
+.tile { position: relative; display: block; overflow: hidden; background: #1a1c25; outline-offset: 3px; }
+.tile img { width: 100%; height: auto; display: block; filter: saturate(0.85) brightness(0.82); transition: filter .35s, transform .6s; }
+.tile:hover img, .tile:focus-visible img { filter: none; transform: scale(1.04); }
+.tile::after { content: ""; position: absolute; inset: auto 0 0; height: 4px; background: var(--c); opacity: 0; transition: opacity .3s; }
+.tile.textiles { --c: #e3707a; } .tile.photography { --c: #cdb38b; } .tile.provenance { --c: #9aaced; }
+.tile:hover::after, .tile:focus-visible::after { opacity: 1; }
+.tile:focus-visible { outline: 2px solid var(--c); }
+.cap { position: absolute; inset: auto 0 0; padding: 28px 10px 10px; display: grid; gap: 2px;
+  background: linear-gradient(transparent, rgba(8, 9, 14, 0.88)); opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s; }
+.tile:hover .cap, .tile:focus-visible .cap { opacity: 1; transform: none; }
+.cap .k { font: 500 0.66rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+.cap .n { font: 600 0.85rem/1.3 var(--body); color: #fff; }
+
+.threshold { position: fixed; z-index: 4; left: 50%; top: 46%; transform: translate(-50%, -50%); pointer-events: none;
+  width: min(30rem, calc(100% - 48px)); text-align: center; display: grid; gap: 10px; padding: 28px 24px 24px;
+  background: rgba(15, 16, 22, 0.82); border: 1px solid var(--line-c); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.threshold h1 { font-size: clamp(2.4rem, 7vw, 4rem); color: var(--fg-c); }
+.threshold .eyebrow { color: var(--mute-c); }
+.threshold .sub { color: var(--fg-c); font-size: 1.05rem; }
+.threshold .cue { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #e3707a; margin-top: 6px; }
+
+.collage-note { position: fixed; z-index: 4; inset: auto 0 0; background: rgba(15, 16, 22, 0.94); border-top: 1px solid var(--line-c);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  font-size: 0.78rem; line-height: 1.45; color: var(--mute-c); }
+.collage-note p { max-width: 110ch; margin: 0 auto; }
+.collage-note strong { color: var(--fg-c); }
+.collage-note a { color: #9aaced; }
+
+@media (max-width: 900px) { .collage { grid-template-columns: repeat(3, minmax(0, 1fr)); } .col:nth-child(n+4) { display: none; } }
+@media (max-width: 480px) { .collage-page { --g: 6px; } .collage { gap: 6px; } .collage-note { font-size: 0.7rem; } }
+@media (hover: none) { .cap { opacity: 1; transform: none; padding-top: 18px; } .cap .n { font-size: 0.72rem; } }
+@media (prefers-reduced-motion: reduce) {
+  .collage-page { height: auto; overflow: auto; }
+  .collage { position: static; padding-top: 18rem; padding-bottom: 7rem; }
+  .track { animation: none; } .track > [aria-hidden="true"] { display: none; }
+  .col:nth-child(n+4) { display: block; }
+  .threshold { position: absolute; top: 2rem; transform: translateX(-50%); }
+}
