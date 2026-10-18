@@ -57,7 +57,7 @@ def page(path, title, body, section=""):
 <body>
 <div class="selvage" aria-hidden="true"></div>
 <header class="site-head"><div class="wrap">
-<a class="brand" href="{root}index.html">{SITE}<small>{SUB}</small></a>
+<a class="brand" href="{root}home.html">{SITE}<small>{SUB}</small></a>
 <nav class="main" aria-label="Main">{nav}</nav>
 </div></header>
 <main class="wrap">
@@ -171,7 +171,71 @@ home = f"""
   <p>This collection was assembled by a non-Native collector. {review_n} of the photographs show Taos Pueblo people and places, a dance, or Williams dressed as Native and Mexican people. They are marked for community review and carry context on their pages. See <a href="{{{{ROOT}}}}about.html#protocols">cultural protocols</a>.</p>
 </section>
 """
-page("index.html", SITE, home)
+page("home.html", SITE, home.replace('<p class="eyebrow">Teaching With the F.A. Williams Collection</p>', '<p class="eyebrow"><a href="{{ROOT}}index.html">Back to the collage</a></p>'))
+
+# ---------- collage (index.html): the way in ----------
+import random
+tiles = []
+for t in textiles:
+    for i in timgs[t["id"]]:
+        if i["role"].startswith("in-person"): continue
+        if t["id"] == "2148-589": continue     # whirling-log motif needs its essay; keep it out of the collage
+        tiles.append(("textiles", "Textile", f'{t["title"]} {t["id"]}', i["image"], f"textiles/items/{t['id']}.html"))
+for p in photos:
+    if p["cultural_review"]: continue          # flagged images stay out of the collage; they keep their pages
+    tiles.append(("photography", "Photograph", p["title"], p["image"], f"photography/items/{p['id']}.html"))
+for r in records:
+    for im in [x for x in r["images"].split("; ") if x]:
+        if "screen-shot" in im: continue      # screenshots of PDFs read poorly at tile size
+        tiles.append(("provenance", "Paper record", r["title"], im, f"provenance/records/{r['slug']}.html"))
+seen, uniq = set(), []
+for tl in tiles:
+    key = tl[3].split("/")[-1]
+    if key in seen: continue
+    seen.add(key); uniq.append(tl)
+random.Random(1940).shuffle(uniq)
+NCOL = 5
+cols = [[] for _ in range(NCOL)]
+for n, tl in enumerate(uniq): cols[n % NCOL].append(tl)
+def tile(tl, hidden=False):
+    kind, label, title, img, href = tl
+    ah = ' aria-hidden="true" tabindex="-1"' if hidden else ""
+    return (f'<a class="tile {kind}" href="{href}"{ah}><img src="{thumb(img)}" alt="{"" if hidden else E(title)}" loading="lazy">'
+            f'<span class="cap"><span class="k">{label}</span><span class="n">{E(title)}</span></span></a>')
+col_html = ""
+for c, items in enumerate(cols):
+    dur = 70 + (c * 17) % 45
+    col_html += (f'<div class="col" style="--dur:{dur}s" data-dir="{"down" if c % 2 else "up"}"><div class="track">'
+                 + "".join(tile(x) for x in items) + "".join(tile(x, True) for x in items) + "</div></div>")
+collage = f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{SITE}</title>
+<meta name="description" content="{SUB}. Select an image to enter the collection.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;600&family=Young+Serif&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/collage.css">
+</head>
+<body class="collage-page">
+<div class="selvage" aria-hidden="true"></div>
+<main class="collage" aria-label="Select an image to enter the collection">
+{col_html}
+</main>
+<div class="threshold" role="presentation">
+  <p class="eyebrow">Textiles · Photographs · Paper records</p>
+  <h1>{SITE}</h1>
+  <p class="sub">{SUB}</p>
+  <p class="cue">Select an image to enter the collection</p>
+</div>
+<footer class="collage-note"><p><strong>Teaching note.</strong> This collection is intended for educational use only. It may contain harmful language and images of inappropriate dress. It should be read carefully and in the context of the teaching materials. If you believe any material should not be included on this site, contact the owner by <a href="{REPO_URL}/issues">opening an issue on GitHub</a>.</p></footer>
+</body>
+</html>
+"""
+(REPO / "index.html").write_text(collage, encoding="utf-8")
+print("collage tiles:", len(uniq))
 
 # ---------- textiles ----------
 groups = sorted({t["accession_group"] for t in textiles}, key=lambda g: (g != "2148", g))
