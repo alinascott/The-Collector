@@ -171,7 +171,7 @@ home = f"""
   <p>This collection was assembled by a non-Native collector. {review_n} of the photographs show Taos Pueblo people and places, a dance, or Williams dressed as Native and Mexican people. They are marked for community review and carry context on their pages. See <a href="{{{{ROOT}}}}about.html#protocols">cultural protocols</a>.</p>
 </section>
 """
-page("home.html", SITE, home.replace('<p class="eyebrow">Teaching With the F.A. Williams Collection</p>', '<p class="eyebrow"><a href="{{ROOT}}index.html">Back to the collage</a></p>'))
+page("home.html", SITE, home.replace('<p class="eyebrow">Teaching With the F.A. Williams Collection</p>', '<p class="eyebrow"><a href="{{ROOT}}index.html">Back to the entrance</a></p>'))
 
 # ---------- collage (index.html): the way in ----------
 import random
@@ -194,6 +194,9 @@ for tl in tiles:
     if key in seen: continue
     seen.add(key); uniq.append(tl)
 random.Random(1940).shuffle(uniq)
+(REPO / "data").mkdir(exist_ok=True)
+(REPO / "data/collage_tiles.json").write_text(json.dumps(
+    [dict(zip(["kind", "label", "title", "image", "href"], t)) for t in uniq], ensure_ascii=False, indent=1), encoding="utf-8")
 NCOL = 5
 cols = [[] for _ in range(NCOL)]
 for n, tl in enumerate(uniq): cols[n % NCOL].append(tl)
@@ -234,7 +237,8 @@ collage = f"""<!doctype html>
 </body>
 </html>
 """
-(REPO / "index.html").write_text(collage, encoding="utf-8")
+if "--drifting" in sys.argv:  # the earlier drifting-columns entrance; index.html is now built by build_entrances.py
+    (REPO / "drifting.html").write_text(collage, encoding="utf-8")
 print("collage tiles:", len(uniq))
 
 # ---------- textiles ----------
@@ -399,7 +403,7 @@ page("teaching/index.html", "Teaching", f"""<div class="pagehead"><p class="eyeb
 <p><a href="files/digital-archive-worksheet.pdf">Digital archive worksheet (PDF)</a> · <a href="files/the-wild-west-slides.pdf">The Wild West? slides (PDF)</a></p>""", "teaching")
 
 # ---------- about ----------
-ab = {k: frag(f"about__{k}")[1] for k in ["home", "project-history", "mission", "legal", "related-resources"]}
+ab = {k: frag(f"about__{k}")[1] for k in ["home", "project-history", "mission", "legal"]}
 page("about.html", "About", f"""<div class="pagehead"><p class="eyebrow">About</p><h1>About this collection</h1></div>
 <section class="prose"><h2>About <em>The Collector</em></h2><p><em>The Collector</em> is a teaching collection built on two archives: the 2018 <em>Woven into History</em> site on the Williams textiles, and Williams's own slides and ephemera at the Harry Ransom Center.</p></section>
 <section class="prose"><h2>From the 2018 site</h2><p><em>Woven into History</em> {ab['home']}</section>
@@ -411,7 +415,6 @@ page("about.html", "About", f"""<div class="pagehead"><p class="eyebrow">About</
 <p>The textiles are Diné work collected and catalogued by non-Native people. Several Ransom Center slides show Taos Pueblo people, places and a dance, and others show Williams dressed as Native, Arctic Indigenous and Mexican people. These items are marked for community review. Before the public launch, the plan is to consult the Navajo Nation Historic Preservation Department and Taos Pueblo, apply Local Contexts labels, and withhold any image the communities ask to restrict while keeping its catalog record.</p></section>
 <section class="prose" id="rights"><h2>Rights and takedown</h2>{ab['legal']}
 <p>Harry Ransom Center material is shown for education and research. The Ransom Center does not own the rights to these items and cannot grant or deny permission. To ask for an item to be removed from public view, open an issue on the <a href="{REPO_URL}/issues">GitHub repository</a>.</p></section>
-<section class="prose"><h2>Related resources</h2>{ab['related-resources']}</section>
 <section class="prose"><h2>Credits</h2><p>Alina I. Scott, compiler and author of the 2018 essays and lesson plans. Dr. Joan Neuberger (course supervisor) and Dr. Astrid Runggaldier (Art and Art History). Textile photography by Steve Bourget and Kimberly L. Jones. Introductions to the Ransom Center slide groups by Jesse Ritner, PhD.</p></section>
 """, "about")
 print("built", "(withholding review images)" if WITHHOLD else "")
