@@ -281,7 +281,7 @@ for t in textiles:
                 "".join(f'<figure class="fig"><a href="{{{{ROOT}}}}{i["image"]}"><img src="{{{{ROOT}}}}{thumb(i["image"])}" alt="{E(t["title"])} {t["id"]}, {E(i["role"])}" loading="lazy"></a></figure>' for i in sel) +
                 "</div></section>")
     card = f"""<div class="catcard"><div class="top"><span class="acc">{t['id']}</span><span class="eyebrow">Acc. group {t['accession_group']}</span></div>
-{dl([("Object", E(t['object_type'])), ("Date", E(t['date']) or '<span class="muted">not recorded</span>'), ("Style", E(t['style'])),
+{dl([("Object", E(t['object_type'])), ("Weaver", E(t.get('weaver', '')) or '<span class="unrecorded">Not recorded</span>'), ("Date", E(t['date']) or '<span class="muted">not recorded</span>'), ("Style", E(t['style'])),
      ("Materials", E(t['materials'])), ("Collector", E(t['collector_as_recorded']) or '<span class="muted">not stated on source</span>'),
      ("Williams link", E(t['williams_attribution'])), ("Photographer", E(t['photographer'])), ("DASe image", E(t['dase_image'])),
      ("Held by", E(t['holding']))])}</div>"""
@@ -397,8 +397,13 @@ les = [frag(f"teaching__{s}") for s in ["the-wild-west", "colonizing-the-southwe
 for m, b in les:
     page(f"teaching/{m['slug']}.html", m["title"], f"""<div class="pagehead"><p class="eyebrow">Teaching · Lesson plan</p><h1>{E(m['title'])}</h1>
 <p class="note">Alina Scott · {m['date']}</p></div><article class="prose">{b}</article>""", "teaching")
+guide = (REPO / "_source/pages/teacher-guide.html").read_text(encoding="utf-8")
+page("teaching/teacher-guide.html", "Teacher guide", f"""<div class="pagehead"><p class="eyebrow">Teaching</p><h1>Teacher guide</h1>
+<p class="lede">How to use <em>The Collector</em> with a class: objectives, a suggested sequence, discussion prompts and assessment.</p></div>
+{guide}""", "teaching")
 page("teaching/index.html", "Teaching", f"""<div class="pagehead"><p class="eyebrow">Teaching</p><h1>Teaching with the collection</h1>
-<p class="lede">Lesson plans for high school and undergraduate classes that use the textiles, trade catalogs and acquisition records as primary sources.</p></div>
+<p class="lede">Lesson plans for high school and undergraduate classes that use the textiles, trade catalogs and acquisition records as primary sources.</p>
+<p><a class="guide-link" href="teacher-guide.html">Start with the teacher guide →</a></p></div>
 <div class="links" style="max-width:68ch">{''.join(f'<a class="link-row" href="{m["slug"]}.html"><span></span><span><span class="t">{E(m["title"])}</span><br><span class="e">Lesson plan · {m["date"]}</span></span></a>' for m, _ in les)}</div>
 <p><a href="files/digital-archive-worksheet.pdf">Digital archive worksheet (PDF)</a> · <a href="files/the-wild-west-slides.pdf">The Wild West? slides (PDF)</a></p>""", "teaching")
 

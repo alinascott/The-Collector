@@ -264,7 +264,7 @@ for i in posts:
     textiles.append({"id": acc, "title": t.replace(f" ({acc})", ""), "object_type": re.sub(r";\s*textiles?$", "", typ.replace("blankt", "blanket")).strip().capitalize(),
                      "date": "" if date.lower() in ("n/a", "") else date.replace(" (creation)", ""),
                      "style": style, "materials": mats, "description": desc,
-                     "collector_as_recorded": coll, "williams_attribution": attrib, "accession_group": group,
+                     "weaver": "", "collector_as_recorded": coll, "williams_attribution": attrib, "accession_group": group,
                      "photographer": phot, "dase_image": base, "holding": "Department of Art and Art History, UT Austin",
                      "subjects": "; ".join(sorted(set(cats), key=str.lower)), "notes": " ".join(notes),
                      "source_post": i.findtext("link")})

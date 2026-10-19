@@ -87,3 +87,11 @@
 .leader .note-s a { color: #9aaced; }
 .leader.end { width: 300px; padding-left: 18px; border-left: 2px solid #cfa54a; }
 @media (max-width: 600px) { .film-page { --fh: 36vh; } .leader { width: 260px; } .leader h1 { font-size: 2.2rem; } }
+
+/* filmstrip context markers: history around the objects, set apart from the frames */
+.context { flex: none; width: 230px; height: var(--fh); display: grid; align-content: center; gap: 8px; padding: 18px 18px;
+  background: #1b1c22; border: 1px solid #3a3b44; border-top: 3px solid #cfa54a; }
+.context .ck { font: 500 .68rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #cfa54a; }
+.context .ct { font-family: var(--display); font-size: 1.35rem; line-height: 1.15; color: var(--fg-c); }
+.context .cd { font-size: .84rem; line-height: 1.5; color: var(--mute-c); }
+@media (max-width: 600px) { .context { width: 200px; padding: 14px; } .context .cd { font-size: .78rem; } }

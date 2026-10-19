@@ -15,7 +15,7 @@ The site is static HTML served by GitHub Pages from the repository root. Every p
 
 ## Entrance
 
-`index.html` is the way in. A **View** toggle in the top right switches between two entrances: **Table** (the default) and **Filmstrip** (`filmstrip.html`, dated items in order from the 1860s to the 1969 accession). A third view, **Pairs**, is set aside for now; build it with `python3 scripts/build_entrance_views.py --pairs`. The teaching note is left off the entrance views and appears on every page inside the site.
+`index.html` is the way in. It opens on a black screen with the question *What have you learned about Indigenous communities… and how?* for three seconds, then fades into the Table. A click or key press skips it, and it shows once per browser session. A **View** toggle in the top right switches between two entrances: **Table** (the default) and **Filmstrip** (`filmstrip.html`, dated items in order from the 1860s to the 1969 accession). A third view, **Pairs**, is set aside for now; build it with `python3 scripts/build_entrance_views.py --pairs`. The teaching note is left off the entrance views and appears on every page inside the site.
 
 The Table is a matte table with three archival document boxes, one for each pathway: Provenance (32 paper records), Textiles (16 textiles) and Photography (28 photographs). The boxes carry no labels. Hovering over a box opens its lid, and the first prints rise out of it. Choosing a box spreads its prints across the table, and choosing a print opens that item's page. "All three stacks" or the Escape key goes back. A stack can be linked to directly as `index.html#provenance`, `#textiles` or `#photography`. The former front page is now `home.html`, and the site name in every header links to it. Images flagged for community review, and sampler 2148-589, are left out of the entrance but keep their own pages.
 
@@ -29,7 +29,7 @@ The table is built by `scripts/build_entrances.py`, which runs after `build_site
 | `textiles/` | 17 textiles with documentation photographs, details and in-person photographs; four context essays | `textiles.csv`, `textile_images.csv` |
 | `photography/` | 46 Harry Ransom Center items: slides of Williams's sculpture, of Williams, of Taos and Red River, of Taos people, and lecture ephemera | `photographs.csv`, `group_introductions.csv` |
 
-Plus `teaching/` (four lesson plans) and `data/crosswalk.csv`, which links items across the archives. Each link has a relationship (`depicts`, `documents`, `related`), a confidence level (`confirmed`, `probable`, `related`) and the evidence for it.
+Plus `teaching/` (the teacher guide and four lesson plans; edit the guide in `_source/pages/teacher-guide.html`) and `data/crosswalk.csv`, which links items across the archives. Each link has a relationship (`depicts`, `documents`, `related`), a confidence level (`confirmed`, `probable`, `related`) and the evidence for it.
 
 ## Identifiers
 
