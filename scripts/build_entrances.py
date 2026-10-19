@@ -94,6 +94,12 @@ def pile_html(kind, name, label, desc, href):
 stacks = "".join(stack_html(*p) for p in PATHS)
 spreads = "".join(pile_html(*p) for p in PATHS)
 table = HEAD + f"""<body class="collage-page table-page stacks-page">
+<script>
+/* the opening question: shown once per visit, then fades into the table */
+(function () {{ var seen = false; try {{ seen = sessionStorage.getItem('collector-intro') === '1'; }} catch (e) {{}}
+  if (!seen && !location.hash) document.documentElement.classList.add('intro-on'); }})();
+</script>
+<div class="intro" aria-live="polite"><p class="intro-q">What have you learned about Indigenous communities<span class="dots">…</span> and how?</p></div>
 <div class="selvage" aria-hidden="true"></div>
 <main class="matte" aria-label="Three archival boxes. Open one to see its contents">
   <div class="label-card">
@@ -106,6 +112,21 @@ table = HEAD + f"""<body class="collage-page table-page stacks-page">
 </main>
 <div class="spread" hidden>{spreads}</div>
 <script>
+(function () {{
+  var root = document.documentElement, intro = document.querySelector('.intro');
+  if (root.classList.contains('intro-on')) {{
+    var done = false;
+    function finish() {{
+      if (done) return; done = true;
+      try {{ sessionStorage.setItem('collector-intro', '1'); }} catch (e) {{}}
+      root.classList.add('intro-out');
+      setTimeout(function () {{ root.classList.remove('intro-on', 'intro-out'); }}, 1400);
+    }}
+    setTimeout(finish, 3000);
+    intro.addEventListener('click', finish);
+    addEventListener('keydown', function k() {{ finish(); removeEventListener('keydown', k); }});
+  }}
+}})();
 (function () {{
   var body = document.body, spread = document.querySelector('.spread');
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches, opener = null;

@@ -173,3 +173,17 @@
   .prints { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .box3d, .hinge, .peek, .prints .print { transition: none; } }
+
+/* the opening question: a black matte screen for three seconds, then a fade into the table */
+.intro { display: none; }
+.intro-on .intro { display: grid; place-items: center; position: fixed; inset: 0; z-index: 50; cursor: pointer;
+  padding: 24px max(24px, env(safe-area-inset-right, 0px)) 24px max(24px, env(safe-area-inset-left, 0px));
+  background-color: #0b0b0c;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  transition: opacity 1.3s ease; }
+.intro-q { margin: 0; max-width: 22ch; text-align: center; font-family: var(--display); font-size: clamp(1.9rem, 5vw, 3.6rem); line-height: 1.2;
+  color: #f1efe9; text-wrap: balance; animation: introIn 1s ease both; }
+.intro-q .dots { color: #e3707a; }
+.intro-out .intro { opacity: 0; pointer-events: none; }
+@keyframes introIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .intro-q { animation: none; } .intro-on .intro { transition-duration: .3s; } }

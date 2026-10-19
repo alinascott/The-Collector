@@ -155,19 +155,37 @@ frames += [
 frames.sort(key=lambda f: f[0])
 ERAS = [(1860, "Weaving", "Diné weavers make the blankets, 1860s–1900s"), (1922, "The collector", "Williams in New York and Taos"),
         (1950, "Later weaving", ""), (1966, "The archive", "Texas Memorial Museum catalogues the gift")]
+# Context markers: the political and economic history the weaving moved through
+CONTEXT = [
+    (1864, "1864–1866", "The Long Walk", "The U.S. Army forces thousands of Diné from their homeland to Bosque Redondo (Hwéeldi) at Fort Sumner, New Mexico."),
+    (1868, "1868", "Treaty of 1868", "The treaty signed at Bosque Redondo lets the Diné return to a reservation within part of their homeland."),
+    (1878, "1878", "Trading posts", "J. L. Hubbell buys the trading post at Ganado. Traders become the main buyers of weaving and steer weavers toward rugs for outside markets."),
+    (1881, "1881", "The railroad", "The railroad reaches the region, bringing tourists, commercial Germantown yarns and aniline dyes."),
+    (1903, "1903 and 1911", "Trader catalogs", "J. B. Moore's catalogs from the Crystal trading post sell rugs by design number, illustrated with Simeon Schwemberger's photographs of weavers."),
+    (1924, "1924", "Indian Citizenship Act", "Congress grants U.S. citizenship to Native Americans born in the United States."),
+    (1935, "1935", "Indian Arts and Crafts Board", "Congress creates the Board to promote and protect Native arts, including weaving."),
+    (1942, "1942–1945", "Navajo Code Talkers", "Diné Marines use the Navajo language for coded communication in the Pacific during the Second World War."),
+]
+items_t = [(y, 1, ("frame", label, d)) for y, label, d in frames] + [(y, 0, ("context", label, (title, text))) for y, label, title, text in CONTEXT]
+items_t.sort(key=lambda r: (r[0], r[1]))
 strip, last_era = "", None
-for y, label, d in frames:
+for y, _, (kind, label, d) in items_t:
     era = [e for e in ERAS if y >= e[0]][-1]
     if era != last_era:
         strip += f'<div class="era"><span class="k">{era[0]}s</span><span class="n">{E(era[1])}</span><span class="d">{E(era[2])}</span></div>'
         last_era = era
+    if kind == "context":
+        title, text = d
+        strip += (f'<div class="context" role="note"><span class="ck">Context · {E(label)}</span>'
+                  f'<span class="ct">{E(title)}</span><span class="cd">{E(text)}</span></div>')
+        continue
     strip += (f'<a class="frame {d["kind"]}" href="{d["href"]}" style="--ar:{ar(d["img"]):.3f}"><img src="{thumb(d["img"])}" alt="{E(d["title"])}" loading="lazy" draggable="false">'
               f'<span class="when">{E(label)}</span><span class="what">{E(d["title"])}</span></a>')
 film = head("film-page") + f"""
 <main class="film" aria-label="Timeline of the collection, earliest first. Select an image to enter">
   <div class="reel">
     <div class="leader"><h1>The Collector</h1><p class="sub">Teaching With the F.A. Williams Collection</p>
-      <p class="cue">Scroll through time → Select an image to enter</p><p class="note-s">{len(frames)} dated items, from the 1860s to the 1969 accession. Undated items are not on the strip.</p></div>
+      <p class="cue">Scroll through time → Select an image to enter</p><p class="note-s">{len(frames)} dated items, from the 1860s to the 1969 accession, with {len(CONTEXT)} context markers from the history the weaving moved through. Undated items are not on the strip.</p></div>
     {strip}
     <div class="leader end"><p class="cue">1969 → today</p><p class="note-s">The textiles stay with the Department of Art and Art History; the slides and photographs with the Harry Ransom Center. <a href="home.html">Enter the collection</a></p></div>
   </div>
